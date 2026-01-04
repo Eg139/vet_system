@@ -1,139 +1,65 @@
----
+# VetSaaS: Sistema Integral de Gestión Veterinaria 🐾
 
-# 📘 Manual de Estilo y Arquitectura: Vet-Backend
 
-Este documento establece los estándares técnicos para garantizar que el sistema sea escalable, mantenible y profesional.
 
----
-
-## 🏛️ 1. Estructura de Software y Clean Code
-
-Para mantener la separación de responsabilidades, cada módulo debe seguir estrictamente esta organización de archivos:
-
-* **`nombre.module.ts`**: Corazón del módulo. Define inyecciones, controladores y proveedores.
-* **`nombre.controller.ts`**: Capa de entrada. Solo gestiona rutas, decoradores de Swagger y recibe DTOs. **No contiene lógica de negocio.**
-* **`nombre.service.ts`**: Capa de lógica. Aquí reside la "inteligencia" del sistema, validaciones complejas y llamadas a la base de datos.
-* **`dto/`**: Directorio para objetos de transferencia de datos (validación de entrada).
-* **`entities/`**: Modelos de TypeORM que representan las tablas en la base de datos.
+> Hybrid Management Solution: SaaS Web Subscription + Electron Desktop Security.
 
 ---
 
-## 🛠️ 2. Estándar Maestro de DTOs (Data Transfer Objects)
-
-El DTO es el contrato entre el cliente (Frontend) y el servidor. En NestJS, su función es triple: **Validar, Tipar y Documentar.**
-
-### A. Reglas de Oro de un DTO Profesional
-
-1. **Inmutabilidad Total**: Usa siempre `readonly`. Esto asegura que los datos no sufran efectos secundarios durante el ciclo de vida del request.
-2. **Single Responsibility (SRP)**: Un DTO para cada acción. No mezcles `CreateUserDto` con `UpdateUserDto` si el segundo permite campos opcionales que el primero no.
-3. **Naming Semántico**:
-* **Contextos Genéricos**: Usa nombres simples como `email` o `password` (ej. en Login).
-* **Contextos Compuestos**: Usa nombres específicos si hay riesgo de ambigüedad (ej. `adminEmail` y `vetEmail` en un proceso de registro masivo).
-
-
-
-### B. Anatomía de un Decorador (Orden Sugerido)
-
-Para mantener la legibilidad, organiza los decoradores de cada propiedad de la siguiente forma:
-
-1. **Swagger (`@ApiProperty`)**: Documentación visual para el equipo.
-2. **Validación (`@Is...`)**: Reglas de negocio (ej. `@IsEmail`, `@IsUUID`).
-3. **Transformación (`@Type`, `@Trim`)**: Limpieza y casteo de datos.
-
-### C. Implementación Maestra: `CreatePetDto`
-
-Este ejemplo sirve de plantilla para cualquier entidad del sistema:
-
-```typescript
-import { 
-  IsString, IsInt, IsEnum, IsUUID, IsOptional, 
-  MinLength, MaxLength, Min, Max 
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-
-export enum PetSpecies {
-  DOG = 'Canino',
-  CAT = 'Felino',
-  BIRD = 'Ave',
-  OTHER = 'Otro'
-}
-
-export class CreatePetDto {
-  @ApiProperty({ description: 'Nombre de la mascota', example: 'Firulais' })
-  @IsString({ message: 'El nombre debe ser una cadena de texto' })
-  @MinLength(2, { message: 'El nombre es demasiado corto' })
-  readonly name: string;
-
-  @ApiProperty({ enum: PetSpecies, example: PetSpecies.DOG })
-  @IsEnum(PetSpecies, { message: 'La especie seleccionada no es válida' })
-  readonly species: PetSpecies;
-
-  @ApiProperty({ description: 'Edad en años', required: false })
-  @IsInt({ message: 'La edad debe ser un número entero' })
-  @Min(0)
-  @IsOptional() // Campo opcional en el JSON, pero validado si existe
-  readonly age?: number;
-
-  @ApiProperty({ description: 'ID del dueño (UUID)' })
-  @IsUUID('4', { message: 'El ID del dueño debe ser un UUID válido' })
-  readonly ownerId: string;
-}
-
-```
-
-### D. Tabla de Validación Rápida
-
-| Tipo de Dato | Decoradores Sugeridos | Propósito |
-| --- | --- | --- |
-| **Textos** | `@IsString()`, `@MinLength()`, `@MaxLength()` | Seguridad en longitud de cadenas. |
-| **Números** | `@IsNumber()`, `@IsInt()`, `@Min()`, `@Max()` | Evitar valores negativos o fuera de rango. |
-| **Opcionales** | `@IsOptional()` | Evita errores 400 cuando el campo no es requerido. |
-| **Relaciones** | `@IsUUID()` | Garantiza que los IDs extranjeros sean válidos. |
-| **Listas** | `@IsArray()`, `@ArrayMinSize()` | Validación de colecciones de datos. |
+## 🌐 Language / Idioma
+- [English Version](#english-version)
+- [Versión en Español](#versión-en-español)
 
 ---
 
-## 💾 3. Gestión de Base de Datos y Migraciones
+<a name="english-version"></a>
+## 🇺🇸 English Version
 
-Queda estrictamente prohibido el uso de `synchronize: true` en entornos de desarrollo compartido o producción.
+### 🚀 Overview
+**VetSaaS** is a hybrid management solution designed for modern veterinary clinics. It combines the flexibility of a **SaaS Web** subscription model with the power and security of an **Electron Desktop** application, allowing professionals to manage patients, surgeries, and licenses with or without a permanent internet connection.
 
-* **Atomicidad**: Cada migración debe realizar **un solo cambio lógico**. Si necesitas crear una tabla y modificar otra, considera hacer dos migraciones separadas.
-* **Flujo de Trabajo**:
-1. Actualizar la Entidad (`.entity.ts`).
-2. Generar: `npm run migration:generate -- src/db/migrations/NombreDelCambio`.
-3. **Auditoría**: Abrir el archivo generado y verificar que los métodos `up` y `down` sean coherentes.
-4. Aplicar: `npm run migration:run`.
+### 🌟 Key Features
+* **Multi-tenant Architecture:** Total data isolation between organizations using security Guards and database-level filtering.
+* **Dynamic Branding:** Real-time UI adaptation to the clinic's corporate identity (logo, colors, and name) using Angular Signals.
+* **Automated Backups:** Local and cloud scheduled (@Cron) and manual backup system with a rotation engine for storage optimization.
+* **Enterprise Security:** JWT authentication, multi-level route protection, and Hardware ID validation for local licenses.
+* **Hybrid Strategy:** PWA for mobile access and Electron for full local hardware integration.
 
-
-
----
-
-## 🔐 4. Autenticación y Multi-Tenancy (JWT)
-
-El sistema está diseñado para albergar múltiples organizaciones (Veterinarias) de forma aislada.
-
-* **JWT Payload**: El token no es solo para login; es el motor del Multi-Tenancy. Debe incluir obligatoriamente:
-* `sub`: ID único del usuario.
-* `orgId`: ID de la organización a la que pertenece (indispensable para filtrar queries SQL).
-
-
-* **Seguridad de Credenciales**:
-* Nunca almacenar contraseñas en texto plano.
-* Uso de `bcrypt` con un **Salt de 10 rondas**.
-* Uso de `@BeforeInsert()` en la entidad `User` para automatizar el hasheo.
-
-
-* **Estrategia de Login**: Al autenticar, usar siempre `relations: ['organization']` para inyectar el ID de la empresa en el payload del token.
+### 🛠️ Tech Stack
+* **Backend:** NestJS (Node.js), TypeORM, Swagger UI.
+* **Frontend:** Angular 19 (Signals, Standalone Components, SCSS).
+* **Desktop:** Electron (for .exe/.dmg distribution).
+* **Database:** PostgreSQL / SQLite (for local portability).
 
 ---
 
-## ✅ Checklist de Revisión de Pull Requests
+<a name="versión-en-español"></a>
+## 🇪🇸 Versión en Español
 
-* [ ] ¿Todos los campos del DTO tienen `readonly`?
-* [ ] ¿Se incluyó la propiedad `orgId` en el payload del JWT?
-* [ ] ¿Las migraciones tienen nombres descriptivos en CamelCase?
-* [ ] ¿Los decoradores de Swagger coinciden con las validaciones de `class-validator`?
+### 🚀 Resumen
+**VetSaaS** es una solución de gestión híbrida diseñada para clínicas veterinarias modernas. Combina la flexibilidad de un modelo **SaaS Web** por suscripción con la potencia y seguridad de una aplicación de **Escritorio (Electron)**, permitiendo a los profesionales gestionar pacientes, cirugías y licencias con o sin conexión permanente a internet.
+
+### 🌟 Características Principales
+* **Arquitectura Multi-tenant:** Aislamiento total de datos entre organizaciones mediante Guards de seguridad y filtrado a nivel de base de datos.
+* **Branding Dinámico:** Interfaz que se adapta automáticamente a la identidad corporativa de la clínica (logo, colores y nombre) mediante Angular Signals.
+* **Backups Automatizados:** Sistema de respaldos programados (@Cron) y manuales con motor de rotación para optimizar el almacenamiento.
+* **Seguridad Empresarial:** Autenticación JWT, protección de rutas y validación de Hardware ID para licencias locales.
+* **Estrategia Híbrida:** PWA para móviles y Electron para integración total con el hardware local.
+
+### 🛠️ Stack Tecnológico
+* **Backend:** NestJS (Node.js), TypeORM, Swagger UI.
+* **Frontend:** Angular 19 (Signals, Standalone Components, SCSS).
+* **Desktop:** Electron (Distribución .exe/.dmg).
 
 ---
 
-Este documento es la base de **Vet-Backend**. Cualquier cambio en la arquitectura debe ser reflejado aquí.
+## 📖 Technical Documentation / Documentación Técnica
+For in-depth details about DTO standards, migrations, and security guards, please refer to the architecture manual:
+Para detalles profundos sobre estándares de DTO, migraciones y guards de seguridad, consulte el manual de arquitectura:
+
+👉 **[ARCHITECTURE.md](./ARCHITECTURE.md)**
+
+## 📋 Roadmap
+- [ ] Electron Builder installer finalization.
+- [ ] Hardware ID licensing implementation.
+- [ ] WhatsApp/Email appointment reminders.
