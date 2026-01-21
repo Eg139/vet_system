@@ -5,9 +5,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // src/main.ts
+  // MODIFICACIÓN DE CORS
   app.enableCors({
-    origin: 'http://localhost:4200', // Tu URL de Angular
+    // Permitimos localhost para tus pruebas y la futura URL de Vercel
+    // Si quieres no complicarte ahora, usa origin: true o origin: '*'
+    origin: [
+      'http://localhost:4200', 
+      /\.vercel\.app$/ // Esto permite cualquier subdominio de Vercel
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -19,13 +24,18 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('auth')
     .addTag('organizations')
-    .addTag('backups') // <-- Agregamos el tag para identificar el nuevo módulo
-    .addBearerAuth()   // <-- ESTO es lo que permite usar JWT en la interfaz de Swagger
+    .addTag('backups')
+    .addBearerAuth()
     .build();
     
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // La documentación vivirá en http://localhost:3000/api
+  SwaggerModule.setup('api', app, document); 
 
-  await app.listen(process.env.PORT ?? 3000);
+  // MODIFICACIÓN DEL LISTEN
+  // Es vital el '0.0.0.0' para que Render pueda rutear el tráfico
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0');
+  
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
