@@ -20,18 +20,26 @@ import { ScheduleModule } from '@nestjs/schedule';
 
     // 2. TypeORM asíncrono para asegurar que lea las variables
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get<string>('DB_HOST') || '127.0.0.1',
-        port: config.get<number>('DB_PORT') || 5433,
-        username: config.get<string>('DB_USERNAME') || 'postgres',
-        password: config.get<string>('DB_PASSWORD') || 'mimosa22',
-        database: config.get<string>('DB_NAME') || 'vet_db',
-        autoLoadEntities: true,
-        synchronize: false,
-      }),
-    }),
+          inject: [ConfigService],
+          useFactory: (config: ConfigService) => {
+            const url = config.get<string>('DATABASE_URL');
+            
+            return {
+              type: 'postgres',
+              // Si hay URL (Render), la usa. Si no, usa los campos sueltos (Local).
+              url: url, 
+              host: url ? undefined : config.get<string>('DB_HOST') || '127.0.0.1',
+              port: url ? undefined : config.get<number>('DB_PORT') || 5433,
+              username: url ? undefined : config.get<string>('DB_USERNAME') || 'postgres',
+              password: url ? undefined : config.get<string>('DB_PASSWORD') || 'mimosa22',
+              database: url ? undefined : config.get<string>('DB_NAME') || 'vet_db',
+              autoLoadEntities: true,
+              synchronize: true, // Cámbialo a true para que se creen las tablas en Supabase la primera vez
+              // ESTO ES LO MÁS IMPORTANTE PARA RENDER + SUPABASE:
+              ssl: url ? { rejectUnauthorized: false } : false,
+            };
+          },
+        }),
 
     OrganizationsModule,
     UsersModule,
