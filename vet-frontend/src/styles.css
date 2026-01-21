@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* 💡 Añade esto para asegurarte de que Tailwind escanee tus componentes */
+@source "./app/**/*.{ts,html}";
+
+@theme {
+  --color-brand-primary: var(--color-primary);
+  --radius-brand: var(--radius-base);
+}
+
+:root {
+  --color-primary: #3b82f6; 
+  --radius-base: 0.5rem;
+}

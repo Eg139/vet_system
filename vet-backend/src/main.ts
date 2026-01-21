@@ -5,6 +5,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // src/main.ts
+  app.enableCors({
+    origin: 'http://localhost:4200', // Tu URL de Angular
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   // Configuración de Swagger
   const config = new DocumentBuilder()
     .setTitle('Vet SaaS API')

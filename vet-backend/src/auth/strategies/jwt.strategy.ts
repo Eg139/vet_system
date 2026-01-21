@@ -16,11 +16,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // Este método es el que inyecta los datos en req.user
   async validate(payload: any) {
+    // Aquí mapeamos el contenido del Token al objeto 'req.user'
     return { 
       userId: payload.sub, 
       email: payload.email, 
-      orgId: payload.orgId, // <--- ¡Aquí recuperamos la veterinaria!
-      isLicenseActive: payload.isLicenseActive
+      orgId: payload.orgId,
+      orgName: payload.orgName,   
+      orgLogo: payload.orgLogo,
+      orgColor: payload.orgColor, 
+      orgRadius: payload.orgRadius,
+      isLicenseActive: payload.isLicenseActive,
+      licensePlan: payload.licensePlan,
+      machineId: payload.machineId 
     };
   }
 }

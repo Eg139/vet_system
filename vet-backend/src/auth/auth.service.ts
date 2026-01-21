@@ -101,6 +101,10 @@ export class AuthService {
       sub: user.id, 
       email: user.email, 
       orgId: user.organization.id,
+      orgName: user.organization.name,   // <--- Agregado para Branding
+      orgLogo: user.organization.logoUrl, // <--- Agregado para Branding
+      orgColor: user.organization.primaryColor, // <--- Agregado para Branding
+      orgRadius: user.organization.borderRadius, // <--- Agregado para Branding
       isLicenseActive: user.organization.isLicenseActive,
       licensePlan: user.organization.licensePlan,
       machineId: user.organization.machineId // <--- Importante para Eric

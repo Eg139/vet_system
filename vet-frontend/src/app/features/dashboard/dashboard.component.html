@@ -1,0 +1,27 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  
+  <header class="flex justify-between items-center mb-8">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 bg-brand-primary rounded-brand flex items-center justify-center shadow-md overflow-hidden">
+        <img *ngIf="branding.appLogo()" [src]="branding.appLogo()" class="object-cover w-full h-full" alt="Logo">
+        <span *ngIf="!branding.appLogo()" class="text-white font-bold text-xl">
+          {{ branding.appName().charAt(0) }}
+        </span>
+      </div>
+
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 tracking-tight">
+          {{ branding.appName() }}
+        </h1>
+        <p class="text-sm text-gray-500 font-medium uppercase tracking-wider">
+          Panel de Gestión Veterinaria
+        </p>
+      </div>
+    </div>
+
+    <button class="bg-brand-primary text-white px-6 py-2 rounded-brand font-bold shadow-sm hover:opacity-90 transition-all">
+      + Nueva Consulta
+    </button>
+  </header>
+
+  </div>
