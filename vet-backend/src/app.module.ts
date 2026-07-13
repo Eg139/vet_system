@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { LicensingModule } from './licensing/licensing.module';
 import { BackupModule } from './backup/backup.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PatientsModule } from './patients/infrastructure/patients.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { ScheduleModule } from '@nestjs/schedule';
               password: url ? undefined : config.get<string>('DB_PASSWORD') || 'mimosa22',
               database: url ? undefined : config.get<string>('DB_NAME') || 'vet_db',
               autoLoadEntities: true,
-              synchronize: true, // Cámbialo a true para que se creen las tablas en Supabase la primera vez
+              synchronize: false, // Cámbialo a true para que se creen las tablas en Supabase la primera vez
               // ESTO ES LO MÁS IMPORTANTE PARA RENDER + SUPABASE:
               ssl: url ? { rejectUnauthorized: false } : false,
             };
@@ -46,6 +47,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     LicensingModule,
     BackupModule,
+    PatientsModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

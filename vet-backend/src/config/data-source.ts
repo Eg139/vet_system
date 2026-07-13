@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   synchronize: false, // Las migraciones reemplazan a synchronize: true
   logging: true,
 // Cambia esto para que soporte tanto TS como JS
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'], 
+  entities: [__dirname + '/../**/*entity{.ts,.js}'], 
   
   // Ajusta esta ruta a donde realmente quieres tus archivos .ts
   migrations: [__dirname + '/../db/migrations/*{.ts,.js}'],
