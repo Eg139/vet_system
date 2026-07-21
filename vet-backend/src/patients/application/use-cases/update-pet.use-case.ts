@@ -11,7 +11,8 @@ export interface UpdatePetInput {
   breed?: string;
   birthDate?: Date;
   bloodType?: string;
-  newAllergy?: string; // Mantenemos la posibilidad de registrar una alergia desde el perfil
+  chronicAllergies?: string[];
+  photoUrl?: string | null;
 }
 
 @Injectable()
@@ -22,21 +23,30 @@ export class UpdatePetUseCase {
   ) {}
 
   async execute(input: UpdatePetInput): Promise<Pet> {
-    // 1. Buscamos el paciente garantizando el multi-tenancy
+    // 1. Buscamos el paciente garantizando el aislamiento multi-tenant
     const pet = await this.petRepository.findById(input.id, input.orgId);
     if (!pet) {
       throw new NotFoundException('La mascota no existe en esta organización.');
     }
 
-    // 2. Delegamos TODA la lógica y validación a los métodos de la entidad
+    // 2. Delegamos la lógica y validaciones a los métodos semánticos del Dominio
     if (input.name) pet.updateName(input.name);
     if (input.species) pet.updateSpecies(input.species);
     if (input.breed) pet.updateBreed(input.breed);
     if (input.birthDate) pet.updateBirthDate(input.birthDate);
     if (input.bloodType) pet.actualizarTipoSangre(input.bloodType);
-    if (input.newAllergy) pet.agregarAlergia(input.newAllergy);
 
-    // 3. Persistimos los cambios
+    // Si enviaron alergias en el DTO, las agregamos una a una a la entidad
+    if (input.chronicAllergies && input.chronicAllergies.length > 0) {
+      input.chronicAllergies.forEach((allergy) => pet.agregarAlergia(allergy));
+    }
+
+    // Actualizamos la foto si el atributo estuvo presente en la petición
+    if (input.photoUrl !== undefined) {
+      pet.updatePhotoUrl(input.photoUrl);
+    }
+
+    // 3. Persistimos los cambios a través del puerto del repositorio
     return await this.petRepository.save(pet);
   }
 }

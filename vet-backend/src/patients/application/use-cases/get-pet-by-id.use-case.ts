@@ -1,8 +1,9 @@
 // src/patients/application/use-cases/get-pet-by-id.use-case.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { IPetRepository } from '../../domain/ports/pet.repository.interface';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { IPetRepository, PET_REPOSITORY_TOKEN } from '../../domain/ports/pet.repository.interface';
+import { Pet } from '../../domain/entities/pet.entity';
 
-interface GetPetByIdInput {
+export interface GetPetByIdInput {
   id: string;
   orgId: string;
 }
@@ -10,16 +11,15 @@ interface GetPetByIdInput {
 @Injectable()
 export class GetPetByIdUseCase {
   constructor(
+    @Inject(PET_REPOSITORY_TOKEN) // <-- Esto es lo que falta
     private readonly petRepository: IPetRepository,
   ) {}
 
-  async execute(input: GetPetByIdInput) {
-    // Pasamos tanto el id como el orgId tal como lo define tu interfaz
+  async execute(input: GetPetByIdInput): Promise<Pet> {
     const pet = await this.petRepository.findById(input.id, input.orgId);
 
-    // Si devuelve null, significa que no existe o pertenece a otro tenant
     if (!pet) {
-      throw new NotFoundException(`No se encontró la mascota o no tienes permisos para verla.`);
+      throw new NotFoundException(`Mascota con ID "${input.id}" no encontrada.`);
     }
 
     return pet;

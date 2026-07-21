@@ -1,4 +1,3 @@
-// src/patients/infrastructure/controllers/pet.controller.ts
 import { 
   Controller, 
   Post, 
@@ -33,12 +32,12 @@ import { CreatePetHttpDto } from './dtos/create-pet.dto';
 import { UpdatePetHttpDto } from './dtos/update-pet.dto';
 import { TransferOwnershipHttpDto } from './dtos/transfer-ownership.dto';
 
-// Guardián de Seguridad (Descomentá la ruta correcta de tu JwtAuthGuard)
+// Guardián de Seguridad
 // import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard'; 
 
-@ApiTags('Patients') // Agrupa este controlador bajo la sección "Patients" en la UI de Swagger
-@ApiBearerAuth()     // Le avisa a Swagger que todos estos endpoints requieren el Token JWT en la cabecera
-// @UseGuards(JwtAuthGuard) // <-- Descomentalo cuando quieras activar el candado global de Passport
+@ApiTags('Patients')
+@ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
 @Controller('patients')
 export class PetController {
   constructor(
@@ -74,6 +73,7 @@ export class PetController {
       bloodType: dto.bloodType,
       isNeutered: dto.isNeutered,
       chronicAllergies: dto.chronicAllergies,
+      photoUrl: dto.photoUrl,
     });
   }
 
@@ -83,7 +83,7 @@ export class PetController {
   @Get()
   @ApiOperation({ 
     summary: 'Obtener todas las mascotas de un propietario específico',
-    description: 'Retorna la lista de pacientes que pertenecen al cliente indicado, filtrando estrictamente por la organización del usuario autenticado.'
+    description: 'Retorna la lista de pacientes que pertenecen al cliente indicado, filtrando strictly por la organización del usuario autenticado.'
   })
   @ApiQuery({ name: 'ownerId', type: String, description: 'ID único del propietario (Cliente)', example: 'a9b8c7d6-e5f4-3c2b-1a09-fedcba987654' })
   @ApiResponse({ status: 200, description: 'Lista de mascotas retornada exitosamente (mapeada a entidades ricas).' })
@@ -107,11 +107,11 @@ export class PetController {
   @Patch(':id')
   @ApiOperation({ 
     summary: 'Actualizar datos generales del perfil de la mascota',
-    description: 'Modifica propiedades descriptivas y el perfil biológico básico (alergias, tipo de sangre). No permite alterar el estado de castración ni cambiar de dueño directamente.'
+    description: 'Modifica propiedades descriptivas, foto de perfil y el perfil biológico básico (alergias, tipo de sangre).'
   })
   @ApiParam({ name: 'id', type: String, description: 'ID de la mascota a editar', example: '550e8400-e29b-41d4-a716-446655440000' })
-  @ApiResponse({ status: 200, description: 'Perfil de la mascota actualizado y persistido con éxito.' })
-  @ApiResponse({ status: 404, description: 'La mascota no existe o no pertenece a esta clínica.' })
+  @ApiResponse({ status: 200, description: 'Mascota actualizada exitosamente.' })
+  @ApiResponse({ status: 404, description: 'Mascota no encontrada en la organización.' })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdatePetHttpDto,
@@ -127,7 +127,8 @@ export class PetController {
       breed: dto.breed,
       birthDate: dto.birthDate ? new Date(dto.birthDate) : undefined,
       bloodType: dto.bloodType,
-      newAllergy: dto.newAllergy,
+      chronicAllergies: dto.chronicAllergies,
+      photoUrl: dto.photoUrl,
     });
   }
 
@@ -192,7 +193,6 @@ export class PetController {
   async getById(@Param('id') id: string, @Req() req: any) {
     const orgId = req.user?.orgId || 'org-test-id';
 
-    // Acá invocarías un caso de uso específico, por ejemplo: GetPetByIdUseCase
     return await this.getPetByIdUseCase.execute({
       id,
       orgId,
