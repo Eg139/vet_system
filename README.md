@@ -24,12 +24,14 @@
 * **Automated Backups:** Local and cloud scheduled (@Cron) and manual backup system with a rotation engine for storage optimization.
 * **Enterprise Security:** JWT authentication, multi-level route protection, and Hardware ID validation for local licenses.
 * **Hybrid Strategy:** PWA for mobile access and Electron for full local hardware integration.
+* **Optimized Relational Domain:** Decoupled architecture using an intermediate `Owners` profiling entity, preventing database bloating and enabling upcoming client portal features with minimal resource usage.
 
 ### 🛠️ Tech Stack
 * **Backend:** NestJS (Node.js), TypeORM, Swagger UI.
 * **Frontend:** Angular 19 (Signals, Standalone Components, SCSS).
 * **Desktop:** Electron (for .exe/.dmg distribution).
 * **Database:** PostgreSQL / SQLite (for local portability).
+* **Database:** PostgreSQL (Supabase) / SQLite, managed through automated safe TypeORM migrations.
 
 ---
 
@@ -45,11 +47,13 @@
 * **Backups Automatizados:** Sistema de respaldos programados (@Cron) y manuales con motor de rotación para optimizar el almacenamiento.
 * **Seguridad Empresarial:** Autenticación JWT, protección de rutas y validación de Hardware ID para licencias locales.
 * **Estrategia Híbrida:** PWA para móviles y Electron para integración total con el hardware local.
+* **Dominio Relacional Optimizado:** Arquitectura desacoplada mediante una entidad intermedia de `Owners` (Dueños), evitando la sobrecarga de la base de datos y preparando el terreno para el portal de clientes con consumo mínimo de recursos.
 
 ### 🛠️ Stack Tecnológico
 * **Backend:** NestJS (Node.js), TypeORM, Swagger UI.
 * **Frontend:** Angular 19 (Signals, Standalone Components, SCSS).
 * **Desktop:** Electron (Distribución .exe/.dmg).
+* **Base de Datos:** PostgreSQL (Supabase) / SQLite, gestionada mediante migraciones seguras y automatizadas de TypeORM.
 
 ---
 
@@ -63,3 +67,4 @@ Para detalles profundos sobre estándares de DTO, migraciones y guards de seguri
 - [ ] Electron Builder installer finalization.
 - [ ] Hardware ID licensing implementation.
 - [ ] WhatsApp/Email appointment reminders.
+- [ ] **Client Portal Integration (Online appointments & medical history downloading via Owner-User linking).**

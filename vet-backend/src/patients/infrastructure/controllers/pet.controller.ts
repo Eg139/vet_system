@@ -26,6 +26,7 @@ import { UpdatePetUseCase } from '../../application/use-cases/update-pet.use-cas
 import { NeuterPetUseCase } from '../../application/use-cases/neuter-pet.use-case';
 import { TransferPetOwnershipUseCase } from '../../application/use-cases/transfer-pet-ownership.use-case';
 import { GetPetsByOwnerUseCase } from '../../application/use-cases/get-pets-by-owner.use-case';
+import { GetPetByIdUseCase } from '../../application/use-cases/get-pet-by-id.use-case';
 
 // DTOs de Infraestructura
 import { CreatePetHttpDto } from './dtos/create-pet.dto';
@@ -46,6 +47,7 @@ export class PetController {
     private readonly neuterPetUseCase: NeuterPetUseCase,
     private readonly transferPetOwnershipUseCase: TransferPetOwnershipUseCase,
     private readonly getPetsByOwnerUseCase: GetPetsByOwnerUseCase,
+    private readonly getPetByIdUseCase: GetPetByIdUseCase,
   ) {}
 
   // =========================================================================
@@ -172,6 +174,27 @@ export class PetController {
     return await this.transferPetOwnershipUseCase.execute({
       petId: id,
       newOwnerId: dto.newOwnerId,
+      orgId,
+    });
+  }
+
+  // =========================================================================
+  // 6. OBTENER MASCOTA POR ID (GET /patients/:id)
+  // =========================================================================
+  @Get(':id')
+  @ApiOperation({ 
+    summary: 'Obtener los detalles completos de un paciente por su ID',
+    description: 'Retorna toda la información biológica y administrativa de una mascota específica, validando el aislamiento multi-tenant.'
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID único de la mascota (UUID)', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiResponse({ status: 200, description: 'Datos del paciente obtenidos exitosamente.' })
+  @ApiResponse({ status: 404, description: 'El paciente no existe o no pertenece a esta organización.' })
+  async getById(@Param('id') id: string, @Req() req: any) {
+    const orgId = req.user?.orgId || 'org-test-id';
+
+    // Acá invocarías un caso de uso específico, por ejemplo: GetPetByIdUseCase
+    return await this.getPetByIdUseCase.execute({
+      id,
       orgId,
     });
   }

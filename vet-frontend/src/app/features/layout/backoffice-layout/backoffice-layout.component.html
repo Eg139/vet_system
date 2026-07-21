@@ -1,0 +1,66 @@
+<div class="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
+  
+  <aside class="w-64 bg-slate-950 text-slate-200 flex flex-col justify-between border-r border-slate-800 hidden md:flex">
+    <div>
+      <div class="h-16 flex items-center px-6 border-b border-slate-800/60">
+        <span class="text-xl font-bold text-emerald-400 flex items-center gap-2">
+          <span>{{ branding.appName() }}</span>
+          <span class="inline-block hover:animate-bounce">🐾</span>
+        </span>
+      </div>
+      
+      <nav class="p-4 space-y-1">
+        <a routerLink="/backoffice/dashboard" 
+           routerLinkActive="bg-slate-900 text-emerald-400 font-medium border-l-4 border-emerald-400" 
+           [routerLinkActiveOptions]="{ exact: true }"
+           class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all group">
+          <span class="text-lg group-hover:scale-110 transition-transform duration-200">📊</span>
+          <span class="text-sm">Dashboard</span>
+        </a>
+        
+        <a routerLink="/backoffice/patients" 
+           routerLinkActive="bg-slate-900 text-emerald-400 font-medium border-l-4 border-emerald-400"
+           class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-all group">
+          <span class="text-lg group-hover:scale-110 transition-transform duration-200">🐶</span>
+          <span class="text-sm">Pacientes</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-800/60 flex items-center justify-between bg-slate-950">
+      <div class="text-sm truncate mr-2">
+        <p class="font-medium text-white truncate">Eric Admin</p>
+        <p class="text-xs text-slate-500 truncate">admin&#64;vet.com</p>
+      </div>
+      <button (click)="logout()" 
+              class="p-2 text-slate-400 hover:text-red-400 rounded-lg hover:bg-slate-900 transition-colors shrink-0"
+              title="Cerrar Sesión">
+        <span class="text-lg">🚪</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
+    
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10 shadow-sm">
+      <div class="flex items-center space-x-4">
+        <h2 class="text-sm font-semibold text-slate-500 tracking-wide uppercase">
+          {{ branding.appName() }}
+        </h2>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Entorno Seguro
+        </span>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-slate-50">
+      <div class="max-w-7xl mx-auto">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+
+  </div>
+</div>

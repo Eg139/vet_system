@@ -1,13 +1,22 @@
 // src/patients/infrastructure/controllers/dtos/create-pet.dto.ts
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsDateString, IsUUID, IsOptional, IsBoolean, IsArray } from 'class-validator';
+import { 
+  IsString, 
+  IsNotEmpty, 
+  IsDateString, 
+  IsUUID, 
+  IsOptional, 
+  IsBoolean, 
+  IsArray, 
+  IsUrl 
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreatePetHttpDto {
   @ApiProperty({ description: 'Nombre del paciente', example: 'Rocco' })
   @IsString()
   @IsNotEmpty()
-  name!: string; // Usamos '!' por la inicialización estricta de TS en DTOs si fuera necesario
+  name!: string;
 
   @ApiProperty({ description: 'Especie del animal', example: 'Canino' })
   @IsString()
@@ -29,6 +38,14 @@ export class CreatePetHttpDto {
   @IsNotEmpty()
   ownerId!: string;
 
+  @ApiPropertyOptional({ 
+    description: 'URL de la foto de perfil almacenada en Cloudinary', 
+    example: 'https://res.cloudinary.com/vetsaas/image/upload/v123456/pets/rocco.jpg' 
+  })
+  @IsOptional()
+  @IsUrl({}, { message: 'La foto de perfil debe ser una URL válida.' })
+  photoUrl?: string;
+
   @ApiPropertyOptional({ description: 'Tipo de sangre biológico', example: 'DEA 1.1 Negativo', default: 'Desconocido' })
   @IsString()
   @IsOptional()
@@ -43,13 +60,12 @@ export class CreatePetHttpDto {
     description: 'Lista de alergias crónicas detectadas', 
     example: ['Penicilina', 'Dipirona'], 
     default: [],
-    type: [String] // Le aclaramos explícitamente el tipo de array a Swagger
+    type: [String]
   })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @Transform(({ value }) => {
-    // Si viene un string plano por error, lo envolvemos en un array; si no, pasa igual
     if (typeof value === 'string') return [value];
     return value;
   })

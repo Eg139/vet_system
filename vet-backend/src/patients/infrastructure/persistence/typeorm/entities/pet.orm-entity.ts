@@ -1,6 +1,7 @@
 // src/patients/infrastructure/persistence/typeorm/entities/pet.orm-entity.ts
 import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { OwnerOrmEntity } from './owner.orm-entity'; 
+
 @Entity('pets')
 @Index(['id', 'orgId'], { unique: true })
 export class PetOrmEntity {
@@ -16,20 +17,20 @@ export class PetOrmEntity {
   @Column()
   breed!: string;
 
+  // NUEVO: Columna para la foto de perfil desde Cloudinary (Opcional/Nullable)
+  @Column({ name: 'photo_url', type: 'varchar', nullable: true })
+  photoUrl!: string | null;
+
   @Column({ name: 'birth_date', type: 'timestamp' })
   birthDate!: Date;
 
-  // Mantenemos la columna física del ID para búsquedas rápidas directas
   @Column({ name: 'owner_id', type: 'uuid' })
   @Index()
   ownerId!: string;
 
-  // --- ACÁ METEMOS LA RELACIÓN EFICIENTE ---
-  // Muchas mascotas pertenecen a UN dueño. RESTRICT evita borrar un dueño si tiene mascotas asignadas.
   @ManyToOne(() => OwnerOrmEntity, (owner) => owner.pets, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'owner_id' })
   owner!: OwnerOrmEntity;
-  // ----------------------------------------
 
   @Column({ name: 'org_id', type: 'uuid' })
   @Index()

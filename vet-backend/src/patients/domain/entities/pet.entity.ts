@@ -12,6 +12,7 @@ export class Pet {
     private bloodType: string = 'Desconocido', 
     private isNeutered: boolean = false,
     private chronicAllergies: string[] = [],
+    private photoUrl?: string | null,
   ) {}
 
   // ==========================================
@@ -27,6 +28,7 @@ export class Pet {
   public getBloodType(): string { return this.bloodType; }
   public getIsNeutered(): boolean { return this.isNeutered; }
   public getChronicAllergies(): string[] { return this.chronicAllergies; }
+  public getPhotoUrl(): string | null { return this.photoUrl ?? null; }
 
   // ==========================================
   // Métodos semánticos de negocio (Comportamiento)
@@ -57,6 +59,13 @@ export class Pet {
       throw new Error('La fecha de nacimiento no puede ser una fecha futura.');
     }
     this.birthDate = newBirthDate;
+  }
+  public updatePhotoUrl(newPhotoUrl?: string | null): void {
+    if (newPhotoUrl && newPhotoUrl.trim().length === 0) {
+      this.photoUrl = null;
+      return;
+    }
+    this.photoUrl = newPhotoUrl ?? null;
   }
 
   public transferOwnership(newOwnerId: string): void {

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PetOrmEntity } from './persistence/typeorm/entities/pet.orm-entity';
 import { TypeOrmPetRepository } from './persistence/typeorm/repositories/typeorm-pet.repository';
 import { PetController } from './controllers/pet.controller';
+import { OwnerOrmEntity } from './persistence/typeorm/entities/owner.orm-entity';
 
 // Dominio (Puerto)
 import { PET_REPOSITORY_TOKEN } from '../domain/ports/pet.repository.interface';
@@ -16,11 +17,13 @@ import { UpdatePetUseCase } from '../application/use-cases/update-pet.use-case';
 import { GetPetsByOwnerUseCase } from '../application/use-cases/get-pets-by-owner.use-case';
 import { NeuterPetUseCase } from '../application/use-cases/neuter-pet.use-case';
 import { TransferPetOwnershipUseCase } from '../application/use-cases/transfer-pet-ownership.use-case';
+import { GetPetByIdUseCase } from '../application/use-cases/get-pet-by-id.use-case';
+
 
 @Module({
   imports: [
     // Registramos la entidad en el alcance de TypeORM para este módulo
-    TypeOrmModule.forFeature([PetOrmEntity]),
+    TypeOrmModule.forFeature([PetOrmEntity, OwnerOrmEntity]),
   ],
   controllers: [
     PetController, // <-- Clave para exponer las rutas hacia Angular y Swagger
@@ -37,6 +40,7 @@ import { TransferPetOwnershipUseCase } from '../application/use-cases/transfer-p
     GetPetsByOwnerUseCase,
     NeuterPetUseCase,
     TransferPetOwnershipUseCase,
+    GetPetByIdUseCase,
   ],
   // Exportamos los casos de uso por si el módulo de Historial Clínico o Turnos los necesita
   exports: [
@@ -45,6 +49,7 @@ import { TransferPetOwnershipUseCase } from '../application/use-cases/transfer-p
     GetPetsByOwnerUseCase,
     NeuterPetUseCase,
     TransferPetOwnershipUseCase,
+    GetPetByIdUseCase,
   ],
 })
 export class PatientsModule {}

@@ -20,6 +20,7 @@ export class PetMapper {
       ormEntity.isNeutered,
       // Detalle pro: clonamos el array para que el Dominio sea dueño de su propia referencia en memoria
       ormEntity.chronicAllergies ? [...ormEntity.chronicAllergies] : [],
+      ormEntity.photoUrl ?? null,
     );
   }
 
@@ -42,9 +43,11 @@ export class PetMapper {
     // Mapeamos los campos del perfil clínico permanente
     ormEntity.bloodType = domainEntity.getBloodType();
     ormEntity.isNeutered = domainEntity.getIsNeutered();
+
     
     // Detalle pro: clonamos el array al salir del Dominio para aislar completamente la persistencia
     ormEntity.chronicAllergies = [...domainEntity.getChronicAllergies()];
+    ormEntity.photoUrl = domainEntity.getPhotoUrl();
 
     return ormEntity;
   }

@@ -74,7 +74,7 @@ export class LoginComponent {
       
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/backoffice/dashboard']);
         },
         error: (err) => {
           this.isLoading = false;
