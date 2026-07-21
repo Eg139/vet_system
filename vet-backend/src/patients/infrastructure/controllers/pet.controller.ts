@@ -33,7 +33,7 @@ import { UpdatePetHttpDto } from './dtos/update-pet.dto';
 import { TransferOwnershipHttpDto } from './dtos/transfer-ownership.dto';
 
 // Guardián de Seguridad
-// import { JwtAuthGuard } from 'src/auth/infrastructure/guards/jwt-auth.guard'; 
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'; 
 
 @ApiTags('Patients')
 @ApiBearerAuth()
