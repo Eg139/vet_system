@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OnboardingDto } from './dto/onboarding.dto';
 import { Organization } from '../organizations/entities/organization.entity';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity'; // 👈 Importamos UserRole
 import { LoginDto } from './dto/login.dto';
 import { HardwareService } from 'src/licensing/hardware/hardware.service';
 import { EncryptionService } from '../licensing/encryption.service';
@@ -37,7 +37,6 @@ export class AuthService {
 
     try {
       // 1. Preparamos los datos de la organización
-      // Usamos "any" aquí para que TypeScript no moleste con el machineId opcional
       const orgData: any = {
         name: organizationName,
         taxId: taxId,
@@ -47,15 +46,16 @@ export class AuthService {
         licenseSignature: licenseSignature,
       };
 
-      // 3. Creamos la entidad con el objeto que preparamos
+      // 2. Creamos y guardamos la organización
       const organization = queryRunner.manager.create(Organization, orgData);
       const savedOrg = await queryRunner.manager.save(organization);
 
-      // 4. Creamos el usuario administrador
+      // 3. Creamos el usuario administrador asignándole el ROL ADMIN 🛡️
       const user = queryRunner.manager.create(User, {
         email: adminEmail,
         password: password, 
         fullName: adminFullName,
+        role: UserRole.ADMIN, // 👈 Se establece como ADMIN al hacer onboarding
         organization: savedOrg,
       });
       
@@ -64,13 +64,19 @@ export class AuthService {
 
       return {
         message: 'Onboarding exitoso',
-        user: { email: user.email, fullName: user.fullName },
+        user: { 
+          email: user.email, 
+          fullName: user.fullName,
+          role: user.role 
+        },
         organization: { name: savedOrg.name, plan: savedOrg.licensePlan }
       };
 
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      if (error.code === '23505') {
+      // Verificamos si error es un objeto y tiene la propiedad code
+      const err = error as { code?: string };
+      if (err.code === '23505') {
         throw new ConflictException('El email o TaxId ya está registrado');
       }
       throw error; 
@@ -79,47 +85,54 @@ export class AuthService {
     }
   }
 
-  async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+async login(loginDto: LoginDto) {
+  const { email, password } = loginDto;
 
-    const user = await this.dataSource.getRepository(User).findOne({
-      where: { email },
-      relations: ['organization'],
-    });
+  // 🔒 Usamos QueryBuilder para forzar la lectura del campo 'password'
+  const user = await this.dataSource
+    .getRepository(User)
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.organization', 'organization')
+    .addSelect('user.password') // 👈 Esto rescata la contraseña omitida por el select: false
+    .where('user.email = :email', { email })
+    .getOne();
 
-    if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciales inválidas');
-    }
-
-    // 5. El Payload ahora incluye el machineId para que el Guard pueda validarlo
-    const payload = { 
-      sub: user.id, 
-      email: user.email, 
-      orgId: user.organization.id,
-      orgName: user.organization.name,   // <--- Agregado para Branding
-      orgLogo: user.organization.logoUrl, // <--- Agregado para Branding
-      orgColor: user.organization.primaryColor, // <--- Agregado para Branding
-      orgRadius: user.organization.borderRadius, // <--- Agregado para Branding
-      isLicenseActive: user.organization.isLicenseActive,
-      licensePlan: user.organization.licensePlan,
-      machineId: user.organization.machineId // <--- Importante para Eric
-    };
-
-    return {
-      message: 'Login exitoso',
-      user: {
-        fullName: user.fullName,
-        email: user.email,
-        organization: user.organization.name,
-        licensePlan: user.organization.licensePlan,
-        isLicenseActive: user.organization.isLicenseActive
-      },
-      token: this.jwtService.sign(payload),
-    };
+  if (!user || !user.password) {
+    throw new UnauthorizedException('Credenciales inválidas');
   }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw new UnauthorizedException('Credenciales inválidas');
+  }
+
+  // Payload JWT
+  const payload = { 
+    sub: user.id, 
+    email: user.email, 
+    role: user.role,
+    orgId: user.organization.id,
+    orgName: user.organization.name,
+    orgLogo: user.organization.logoUrl,
+    orgColor: user.organization.primaryColor,
+    orgRadius: user.organization.borderRadius,
+    isLicenseActive: user.organization.isLicenseActive,
+    licensePlan: user.organization.licensePlan,
+    machineId: user.organization.machineId
+  };
+
+  return {
+    message: 'Login exitoso',
+    user: {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      organization: user.organization.name,
+      licensePlan: user.organization.licensePlan,
+      isLicenseActive: user.organization.isLicenseActive
+    },
+    token: this.jwtService.sign(payload),
+  };
+}
 }

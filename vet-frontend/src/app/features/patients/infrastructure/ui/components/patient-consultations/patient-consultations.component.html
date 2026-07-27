@@ -1,0 +1,89 @@
+<div class="space-y-6">
+  
+  <!-- CABECERA Y ACCIÓN (Estilo unificado empresarial) -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900 p-5 rounded-2xl border border-slate-700/80 shadow-xl gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-base shadow-inner">
+        🩺
+      </div>
+      <div>
+        <h3 class="text-xs font-bold text-slate-100 uppercase tracking-wider">Historial de Consultas Médicas (SOAP)</h3>
+        <p class="text-[11px] text-slate-400">Expediente evolutivo y notas clínicas estructuradas del paciente.</p>
+      </div>
+    </div>
+    
+    <button (click)="openModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition shadow-lg shadow-emerald-950/40 flex items-center gap-2 cursor-pointer border border-emerald-500/40">
+      <span class="text-sm font-bold leading-none">+</span> Nueva Evolución (SOAP)
+    </button>
+  </div>
+
+  <!-- LISTADO DE CONSULTAS SOAP -->
+  <div class="space-y-4">
+    @for (consultation of consultations(); track consultation.getId()) {
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-700/80 space-y-4 shadow-xl hover:border-slate-600 transition">
+        
+        <!-- Metadatos de la consulta -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-3.5 border-b border-slate-800 gap-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+              📋
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-100">Consulta General / Diagnóstico Clínico</h4>
+              <p class="text-[11px] text-slate-400">Atendido por: <strong class="text-slate-200">{{ consultation.getVeterinarian() }}</strong></p>
+            </div>
+          </div>
+          <span class="text-[11px] bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 font-medium shadow-inner">
+            📅 {{ consultation.getDate() | date:'mediumDate' }}
+          </span>
+        </div>
+
+        <!-- Estructura SOAP en Grid con diseño corporativo -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          
+          <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+            <span class="font-bold text-blue-400  mb-1 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> S - Subjetivo (Anamnesis / Motivo)
+            </span>
+            <p class="text-slate-300 leading-relaxed">{{ consultation.getSubjective() }}</p>
+          </div>
+
+          <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+            <span class="font-bold text-emerald-400  mb-1 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> O - Objetivo (Examen Físico / Constantes)
+            </span>
+            <p class="text-slate-300 leading-relaxed">{{ consultation.getObjective() }}</p>
+          </div>
+
+          <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+            <span class="font-bold text-amber-400  mb-1 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> A - Análisis (Diagnóstico Presuntivo)
+            </span>
+            <p class="text-slate-300 leading-relaxed">{{ consultation.getAssessment() }}</p>
+          </div>
+
+          <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+            <span class="font-bold text-purple-400  mb-1 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> P - Plan (Tratamiento / Indicaciones)
+            </span>
+            <p class="text-slate-300 leading-relaxed">{{ consultation.getPlan() }}</p>
+          </div>
+
+        </div>
+
+      </div>
+    } @empty {
+      <div class="bg-slate-900/50 p-10 rounded-2xl border border-slate-800 text-center text-slate-400 text-xs shadow-inner">
+        No hay consultas médicas registradas para este paciente en el expediente actual.
+      </div>
+    }
+  </div>
+
+</div>
+
+<!-- COMPONENTE MODAL HIJO -->
+<app-patient-consultation-modal 
+  [isOpen]="isModalOpen" 
+  (closeEvent)="closeModal()" 
+  (formSubmit)="onConsultationSubmit($event)">
+</app-patient-consultation-modal>

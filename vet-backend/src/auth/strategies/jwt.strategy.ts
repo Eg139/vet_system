@@ -1,6 +1,8 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { UserRole } from 'src/users/entities/user.entity';
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,7 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // Aquí mapeamos el contenido del Token al objeto 'req.user'
     return { 
       userId: payload.sub, 
-      email: payload.email, 
+      email: payload.email,
+      role: payload.role || UserRole.VET, 
       orgId: payload.orgId,
       orgName: payload.orgName,   
       orgLogo: payload.orgLogo,

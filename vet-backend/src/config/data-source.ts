@@ -20,3 +20,5 @@ export const AppDataSource = new DataSource({
   migrations: [__dirname + '/../db/migrations/*{.ts,.js}'],
   subscribers: [],
 });
+
+//npx typeorm-ts-node-commonjs migration:generate src/db/migrations/ -d src/config/data-source.ts        ejemplo para ejecutar migraciones

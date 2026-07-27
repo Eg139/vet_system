@@ -1,0 +1,46 @@
+<div class="space-y-6">
+  
+  <!-- CABECERA DEL MÓDULO -->
+  <div class="flex justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700/60">
+    <div>
+      <h3 class="text-sm font-bold text-slate-100">Prescripciones y Tratamientos Farmacológicos</h3>
+      <p class="text-xs text-slate-400">Seguimiento de medicamentos activos, dosis y pautas indicadas en plan clínico.</p>
+    </div>
+    <button class="bg-slate-700 hover:bg-slate-600 text-emerald-400 border border-slate-600 text-xs px-3 py-2 rounded-lg font-semibold transition flex items-center gap-1.5">
+      <span>+</span> Nueva Prescripción
+    </button>
+  </div>
+
+  <!-- LISTA DE TARJETAS DE TRATAMIENTO -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    @for (item of treatments(); track item.getId()) {
+      <div class="bg-slate-800 p-5 rounded-xl border border-slate-700/60 flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h4 class="text-sm font-bold text-slate-100 flex items-center gap-1.5">
+              <span>💊</span> {{ item.getMedicationName() }}
+            </h4>
+            <span class="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold">
+              Activo
+            </span>
+          </div>
+
+          <div class="space-y-1.5 text-xs text-slate-300 my-3">
+            <p><strong class="text-slate-400">Posología:</strong> <span class="text-emerald-400 font-medium">{{ item.getDosage() }}</span></p>
+            <p><strong class="text-slate-400">Pautas / Indicaciones:</strong> {{ item.getInstructions() }}</p>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-700/60 flex justify-between items-center text-[11px] text-slate-400">
+          <span>📅 Del {{ item.getStartDate() | date:'shortDate' }} al {{ item.getEndDate() | date:'shortDate' }}</span>
+          <span class="font-medium text-slate-300">Dr(a). {{ item.getPrescribedBy() }}</span>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-2 bg-slate-800/50 p-8 rounded-xl border border-slate-700/40 text-center text-slate-400 text-xs">
+        No hay tratamientos farmacológicos activos registrados en este momento.
+      </div>
+    }
+  </div>
+
+</div>

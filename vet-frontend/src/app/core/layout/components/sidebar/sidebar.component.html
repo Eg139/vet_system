@@ -1,0 +1,124 @@
+<aside class="w-64 bg-slate-800 text-slate-300 flex flex-col shrink-0 border-r border-slate-700/60 shadow-md h-full">
+  
+  <!-- BRANDING -->
+  <div class="h-16 px-6 border-b border-slate-700/60 flex items-center gap-3 bg-slate-800/50">
+    <div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-lg">
+      🐾
+    </div>
+    <div class="overflow-hidden">
+      <span class="text-slate-100 font-bold tracking-tight text-base block truncate">Veterinaria Eric</span>
+      <span class="text-[10px] text-emerald-400 font-medium uppercase tracking-wider block">SaaS Multi-tenant</span>
+    </div>
+  </div>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+    
+    <!-- SECCIÓN 1: OPERACIÓN PRINCIPAL -->
+    <div>
+      <p class="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Clínica</p>
+      <div class="space-y-1">
+        
+        <a routerLink="/backoffice/dashboard" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs" [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm">
+          <span>📊</span> Dashboard
+        </a>
+
+        <a routerLink="/backoffice/appointments" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center justify-between px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm group">
+          <div class="flex items-center gap-3">
+            <span>📅</span> Agenda & Turnos
+          </div>
+          <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full">Nuevo</span>
+        </a>
+
+        <!-- MÓDULO PACIENTES & DUEÑOS CON SUBMENÚ DINÁMICO -->
+        <div>
+          <a routerLink="/backoffice/patients" 
+             [class.bg-emerald-500_15]="isPatientsActive()"
+             [class.text-emerald-300]="isPatientsActive()"
+             [class.font-semibold]="isPatientsActive()"
+             [class.border-emerald-500_30]="isPatientsActive()"
+             class="flex items-center justify-between px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm group">
+            <div class="flex items-center gap-3">
+              <span>🐶</span> Pacientes y Dueños
+            </div>
+            <!-- Flecha indicadora de despliegue -->
+            <span class="text-xs transition-transform duration-200" [class.rotate-180]="isPatientsActive()">▼</span>
+          </a>
+
+          <!-- Submenú interno que aparece al entrar a /backoffice/patients -->
+          @if (isPatientsActive()) {
+            <div class="ml-4 mt-1 pl-3 border-l border-slate-700 space-y-1">
+              <a routerLink="/backoffice/patients/list" routerLinkActive="text-emerald-400 font-semibold bg-slate-700/40" 
+                 class="flex items-center gap-2 py-1.5 px-2.5 rounded-md text-xs text-slate-400 hover:text-white hover:bg-slate-700/40 transition-all">
+                <span>📋</span> Lista de Mascotas
+              </a>
+              <a routerLink="/backoffice/patients/owners" routerLinkActive="text-emerald-400 font-semibold bg-slate-700/40" 
+                 class="flex items-center gap-2 py-1.5 px-2.5 rounded-md text-xs text-slate-400 hover:text-white hover:bg-slate-700/40 transition-all">
+                <span>👥</span> Tutores / Dueños
+              </a>
+              <a routerLink="/backoffice/patients/new" routerLinkActive="text-emerald-400 font-semibold bg-slate-700/40" 
+                 class="flex items-center gap-2 py-1.5 px-2.5 rounded-md text-xs text-slate-400 hover:text-white hover:bg-slate-700/40 transition-all">
+                <span>➕</span> Nuevo Registro
+              </a>
+            </div>
+          }
+        </div>
+
+        <a routerLink="/backoffice/billing" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm">
+          <span>💳</span> Caja & Facturación
+        </a>
+
+        <a routerLink="/backoffice/inventory" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center justify-between px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm">
+          <div class="flex items-center gap-3">
+            <span>📦</span> Inventario
+          </div>
+          <span class="text-[9px] bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded-full">Mock</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: ADMINISTRACIÓN Y NEGOCIO (SUPERADMIN / ADMIN) -->
+    <div>
+      <p class="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Administración</p>
+      <div class="space-y-1">
+        
+        <a routerLink="/backoffice/staff" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm">
+          <span>🩺</span> Personal Médico
+        </a>
+
+        <a routerLink="/backoffice/settings" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-lg text-slate-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm">
+          <span>⚙️</span> Configuración & Marca
+        </a>
+
+        <a routerLink="/backoffice/superadmin" routerLinkActive="bg-emerald-500/15 text-emerald-300 font-semibold border-emerald-500/30 shadow-xs"
+          class="flex items-center justify-between px-3.5 py-2 rounded-lg text-indigo-300 hover:bg-slate-700/60 hover:text-white transition-all border border-transparent text-sm group">
+          <div class="flex items-center gap-3">
+            <span>🏢</span> Panel Multi-tenant
+          </div>
+          <span class="text-[9px] bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded-full">SaaS</span>
+        </a>
+
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- USUARIO / FOOTER -->
+  <div class="p-4 border-t border-slate-700/60 bg-slate-800/40 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-slate-700 text-slate-200 font-semibold text-xs flex items-center justify-center border border-slate-600">
+      Dr
+    </div>
+    <div class="overflow-hidden flex-1">
+      <p class="text-xs font-medium text-slate-200 truncate">Dr. Eric</p>
+      <p class="text-[11px] text-slate-400 truncate">Superadmin / Owner</p>
+    </div>
+  </div>
+
+</aside>

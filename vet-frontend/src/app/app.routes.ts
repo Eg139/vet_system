@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard'; // Tu nuevo guard de invitados
 
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -10,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'backoffice',
-    loadComponent: () => import('./features/layout/backoffice-layout/backoffice-layout.component').then(m => m.BackofficeLayoutComponent),
+    loadComponent: () => import('./core/layout/backoffice-layout/backoffice-layout.component').then(m => m.BackofficeLayoutComponent),
     canActivate: [authGuard], // El guard protege todo el entorno privado de un solo tiro
     children: [
       {
@@ -19,7 +20,24 @@ export const routes: Routes = [
       },
       {
         path: 'patients',
-        loadComponent: () => import('./features/patients/pages/patient-list/patient-list.component').then(m => m.PatientListComponent)
+        loadComponent: () => import('./features/patients/infrastructure/ui/pages/patient-list/patient-list.component').then(m => m.PatientsListComponent)
+      },
+      {
+        path: 'patients/new', 
+        loadComponent: () => import('./features/patients/infrastructure/ui/pages/patient-create/patient-create.component').then(m => m.PatientCreateComponent)
+      },
+      {
+        path: 'patients/update/:id', 
+        loadComponent: () => import('./features/patients/infrastructure/ui/pages/patient-update/patient-update.component').then(m => m.PatientUpdateComponent)
+      },
+      {
+        path: 'patients/:id',
+        loadComponent: () => import('./features/patients/infrastructure/ui/pages/patient-detail/patient-detail.component').then(m => m.PatientDetailComponent)
+      },
+
+      {
+        path: 'appointments', // 👈 NUEVA RUTA DE AGENDA
+        loadComponent: () => import('./features/appointments/appointments/appointments.component').then(m => m.AppointmentsComponent)
       },
       {
         path: '',

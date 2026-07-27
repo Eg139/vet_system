@@ -1,0 +1,37 @@
+<div class="flex h-screen bg-slate-100 overflow-hidden">
+  
+  <!-- Componente Independiente del Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+  <div class="flex-1 flex flex-col overflow-y-auto">
+    
+    <!-- HEADER SUPERIOR -->
+    <header class="bg-white border-b border-slate-200/80 px-6 py-4 shadow-xs flex items-center justify-between shrink-0">
+      <span class="text-sm font-semibold text-slate-600">Panel de Administración</span>
+      
+      <div class="flex items-center gap-4">
+        <!-- Indicador de Licencia -->
+        <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full font-medium">
+          🟢 Licencia Activa (PRO)
+        </span>
+
+        <!-- Botón de Logout -->
+        <button 
+          (click)="logout()" 
+          class="flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-red-600 bg-slate-50 hover:bg-red-50 border border-slate-200 hover:border-red-200 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+          title="Cerrar sesión">
+          <span>🚪</span>
+          <span>Salir</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ÁREA DE RUTAS HIJAS -->
+    <main class="p-6 flex-1">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>

@@ -1,0 +1,55 @@
+<div class="space-y-6">
+  
+  <!-- CABECERA INSTITUCIONAL -->
+  <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-700/80 shadow-xl">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 text-base shadow-inner">
+        ⏳
+      </div>
+      <div>
+        <h3 class="text-xs font-bold text-slate-100 uppercase tracking-wider">Línea de Tiempo Global</h3>
+        <p class="text-[11px] text-slate-400">Historial unificado de eventos médicos, preventivos y quirúrgicos del paciente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE LA LÍNEA DE TIEMPO -->
+  <div class="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-800">
+    
+    @for (event of timelineEvents(); track event.getId()) {
+      @let badge = event.getBadgeConfig();
+      
+      <div class="relative bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2 shadow-lg hover:border-slate-700 transition">
+        <!-- Indicador circular en la línea de tiempo -->
+        <span class="absolute -left-6 top-4 w-3.5 h-3.5 rounded-full {{ badge.dotClass }} border-4 border-slate-950 shadow"></span>
+        
+        <!-- Cabecera de la tarjeta -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-[11px] gap-1">
+          <span class="{{ badge.colorClass }} font-bold uppercase tracking-wider flex items-center gap-1.5">
+            <span>{{ badge.icon }}</span> {{ badge.label }}
+          </span>
+          <span class="text-slate-400 font-medium bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800 shadow-inner">
+            📅 {{ event.getDate() | date:'mediumDate' }}
+          </span>
+        </div>
+
+        <!-- Contenido -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-100">{{ event.getTitle() }}</h4>
+          <p class="text-slate-300 text-xs leading-relaxed mt-1">{{ event.getDescription() }}</p>
+        </div>
+
+        <!-- Pie de tarjeta: Profesional -->
+        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex justify-between items-center">
+          <span>Profesional: <strong class="text-slate-200">{{ event.getVeterinarian() }}</strong></span>
+        </div>
+
+      </div>
+    } @empty {
+      <div class="bg-slate-900/50 p-10 rounded-2xl border border-slate-800 text-center text-slate-400 text-xs shadow-inner">
+        No hay registros en la línea de tiempo global para este paciente.
+      </div>
+    }
+
+  </div>
+</div>

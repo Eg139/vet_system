@@ -1,0 +1,199 @@
+<!-- CONTENEDOR PRINCIPAL ASÍNCRONO -->
+<div class="space-y-6 max-w-6xl mx-auto p-6" *ngIf="patient$ | async as patient; else loading">
+  
+  <!-- BOTÓN DE RETORNO -->
+  <div>
+    <a routerLink="/backoffice/patients" class="text-xs text-slate-400 hover:text-emerald-400 transition flex items-center gap-1 font-medium">
+      ← Volver al listado de pacientes
+    </a>
+  </div>
+
+  <!-- ================================================= -->
+  <!-- 1. HEADER CLÍNICO DE ALTO RENDIMIENTO (UX URGENCIA) -->
+  <!-- ================================================= -->
+<div class="bg-slate-800 p-6 rounded-xl border shadow-xl transition-all mb-6"
+       [ngClass]="hasAllergies(patient) ? 'border-rose-500/80 shadow-rose-950/30' : 'border-slate-700/80'">
+    
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      
+      <!-- Info básica + Avatar + Alertas Visuales -->
+      <div class="flex items-start gap-4">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-3xl shadow-inner shrink-0">
+          🐶
+        </div>
+        <div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <h1 class="text-2xl font-bold text-slate-100 tracking-tight">{{ patient.getName() }}</h1>
+            <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full font-medium">ID: {{ patient.getId() }}</span>
+            
+            <!-- 🔴 BADGE: ALERTA ROJA (Alergias / Vidas) -->
+            @if (patient.getChronicAllergies().length > 0) {
+              <span class="text-xs bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2.5 py-0.5 rounded-md font-semibold flex items-center gap-1.5 animate-pulse">
+                ⚠️ ALÉRGICO CRÍTICO
+              </span>
+            }
+
+            <!-- 🟠 BADGE: ÁMBAR (Precaución de Manejo / Temperamento) -->
+            @if (false) { 
+              <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded-md font-semibold flex items-center gap-1.5">
+                ⚡ Precaución / Manejo
+              </span>
+            }
+          </div>
+
+          <p class="text-sm text-slate-400 mt-1">
+            {{ patient.getSpecies() }} • <span class="text-slate-200 font-medium">{{ patient.getBreed() }}</span> 
+            <span class="mx-2">•</span> Nacimiento: {{ patient.getBirthDate() | date:'mediumDate' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- ACCIONES RÁPIDAS DE GUARDIA -->
+      <div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+        <button 
+          (click)="onDeletePatient(patient)"
+          class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 px-3 py-2.5 rounded-lg text-xs font-semibold transition shadow-sm flex items-center justify-center gap-2">
+          <span>🗑️</span> Eliminar
+        </button>
+        <!-- ✏️ BOTÓN DE MODIFICAR -->
+        <button 
+          (click)="onEditPatient(patient)"
+          class="bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 px-4 py-2.5 rounded-lg text-xs font-semibold transition shadow-sm flex items-center justify-center gap-2">
+          <span>✏️</span> Modificar
+        </button>
+        <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-xs font-semibold transition shadow-sm flex items-center justify-center gap-2">
+          <span>+</span> Nueva Evolución (SOAP)
+        </button>
+      </div>
+    </div>
+
+    <!-- METADATOS CLAVE EN LÍNEA PARA EMERGENCIAS (Peso, Sangre, Tutor y Contacto) -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6 pt-5 border-t border-slate-700/60 text-xs">
+      
+      <!-- PESO ACTUAL (Crítico para dosificación) -->
+      <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-700/40">
+        <span class="text-slate-400 block mb-0.5">Peso Actual</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-emerald-400 font-extrabold text-base">{{ patient.getWeight() ?? 'Sin registrar' }} kg</span>
+          <span class="text-[10px] text-slate-500">(Actualizado)</span>
+        </div>
+      </div>
+
+      <!-- TIPO DE SANGRE -->
+      <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-700/40">
+        <span class="text-slate-400 block mb-0.5">Grupo Sanguíneo</span>
+        <span class="text-slate-200 font-bold text-sm">{{ patient.getBloodType() }}</span>
+      </div>
+
+      <!-- ESTADO REPRODUCTIVO -->
+      <div class="bg-slate-900/40 p-3 rounded-lg border border-slate-700/40">
+        <span class="text-slate-400 block mb-0.5">Estado Reproductivo</span>
+        <span class="font-bold text-sm" [class.text-emerald-400]="patient.getIsNeutered()" [class.text-amber-400]="!patient.getIsNeutered()">
+          {{ patient.getIsNeutered() ? 'Castrado/a' : 'Entero/a' }}
+        </span>
+      </div>
+
+      <!-- TUTOR Y CONTACTO DE URGENCIA -->
+      <div class="col-span-2 bg-slate-900/40 p-3 rounded-lg border border-slate-700/40 flex justify-between items-center">
+        <div>
+          <span class="text-slate-400 block mb-0.5">Tutor Responsable</span>
+          <span class="text-slate-200 font-semibold text-sm">{{ patient.getOwnerName() ?? 'No asignado' }}</span>
+        </div>
+        <div>
+          <a [href]="'tel:' + (patient.getOwnerPhone() ?? '')" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-md font-medium flex items-center gap-1.5 transition">
+            📞 Llamar
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ALERGIAS DESGLOSADAS -->
+    @if (patient.getChronicAllergies().length > 0) {
+      <div class="mt-4 pt-3 border-t border-rose-500/20 flex items-center gap-2 text-xs">
+        <span class="text-rose-400 font-bold shrink-0">Alergias Registradas:</span>
+        <div class="flex flex-wrap gap-1.5">
+          @for (allergy of patient.getChronicAllergies(); track allergy) {
+            <span class="bg-rose-500/15 text-rose-200 px-2 py-0.5 rounded border border-rose-500/30 font-medium">
+              {{ allergy }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ================================================= -->
+  <!-- 2. SISTEMA DE FOLDERS / PESTAÑAS CLÍNICAS         -->
+  <!-- ================================================= -->
+  <div class="flex border-b border-slate-700 gap-8 mb-6 overflow-x-auto">
+    <button (click)="activeTab = 'timeline'" 
+            [class.border-emerald-500]="activeTab === 'timeline'"
+            [class.text-emerald-400]="activeTab === 'timeline'"
+            class="pb-3 border-b-2 border-transparent font-medium text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">
+      📜 Timeline Global
+    </button>
+    <button (click)="activeTab = 'consultations'" 
+            [class.border-emerald-500]="activeTab === 'consultations'"
+            [class.text-emerald-400]="activeTab === 'consultations'"
+            class="pb-3 border-b-2 border-transparent font-medium text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">
+      🩺 Consultas (SOAP)
+    </button>
+    <button (click)="activeTab = 'vaccines'" 
+            [class.border-emerald-500]="activeTab === 'vaccines'"
+            [class.text-emerald-400]="activeTab === 'vaccines'"
+            class="pb-3 border-b-2 border-transparent font-medium text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">
+      💉 Vacunas y Desparasitaciones
+    </button>
+    <button (click)="activeTab = 'treatments'" 
+            [class.border-emerald-500]="activeTab === 'treatments'"
+            [class.text-emerald-400]="activeTab === 'treatments'"
+            class="pb-3 border-b-2 border-transparent font-medium text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">
+      💊 Tratamientos Activos
+    </button>
+    <button (click)="activeTab = 'labs'" 
+            [class.border-emerald-500]="activeTab === 'labs'"
+            [class.text-emerald-400]="activeTab === 'labs'"
+            class="pb-3 border-b-2 border-transparent font-medium text-sm text-slate-400 hover:text-slate-200 transition whitespace-nowrap">
+      🧪 Laboratorio e Imágenes
+    </button>
+  </div>
+
+<!-- ================================================= -->
+  <!-- 3. RENDERIZADO DINÁMICO DE CONTENIDO (SWITCH)     -->
+  <!-- ================================================= -->
+  <div class="space-y-4">
+    @switch (activeTab) {
+      @case ('timeline') {
+        <!-- 📜 AÑADIDO: Caso para la pestaña del Timeline -->
+        <app-timeline [petId]="patient.getId()"></app-timeline>
+      }
+      @case ('consultations') {
+        <!-- 🩺 CORREGIDO: Le pasamos el input [patient] que el componente necesita -->
+        <app-patient-consultations [patient]="patient"></app-patient-consultations>
+      }
+      @case ('vaccines') {
+        <app-patient-vaccines [patientId]="patient.getId()"></app-patient-vaccines>
+      }
+      @case ('treatments') {
+        <app-patient-treatments [patientId]="patient.getId()"></app-patient-treatments>
+      }
+      @case ('labs') {
+        <app-patient-laboratory [patientId]="patient.getId()"></app-patient-laboratory>
+      }
+      @default {
+        <div class="bg-slate-800/50 p-8 rounded-xl border border-slate-700/40 text-center text-slate-400 text-sm">
+          Módulo en desarrollo dentro de la arquitectura modular. Listo para conectar su respectivo repositorio.
+        </div>
+      }
+    }
+  </div>
+
+</div>
+
+<!-- ESTADO DE CARGA -->
+<ng-template #loading>
+  <div class="flex justify-center items-center h-64 text-slate-400 text-sm">
+    Cargando perfil clínico del paciente...
+  </div>
+</ng-template>

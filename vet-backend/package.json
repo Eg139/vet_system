@@ -1,6 +1,6 @@
 {
   "name": "vet-backend",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "author": "",
   "private": true,
@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm migration:generate -- -d src/config/data-source.ts",
-    "migration:run": "npm run typeorm migration:run -- -d src/config/data-source.ts"
+    "migration:run": "npm run typeorm migration:run -- -d src/config/data-source.ts",
+    "seed": "ts-node -r tsconfig-paths/register src/db/seeds/initial-seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

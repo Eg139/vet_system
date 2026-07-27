@@ -1,0 +1,36 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-slate-100">🐾 Gestión de Pacientes</h1>
+    <a routerLink="/backoffice/patients/new" class="bg-emerald-600 text-white px-4 py-2 rounded-lg shadow hover:bg-emerald-500 transition text-sm font-semibold inline-block">
+      + Nuevo Paciente
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @for (patient of patients; track patient.getId()) {
+      <a [routerLink]="['/backoffice/patients', patient.getId()]" 
+         class="bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-700/60 hover:border-emerald-500/50 hover:shadow-md transition block group">
+        
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-lg font-semibold text-slate-100 group-hover:text-emerald-400 transition">{{ patient.getName() }}</h3>
+            <p class="text-sm text-slate-400">{{ patient.getBreed() }} ({{ patient.getSpecies() }})</p>
+          </div>
+
+          <!-- 👈 Span optimizado y limpio -->
+          <span class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                [class]="getNeuteredBadgeClasses(patient.getIsNeutered())">
+            {{ patient.getIsNeutered() ? 'Castrado/a' : 'Entero/a' }}
+          </span>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-700/60 text-sm space-y-1">
+          <p class="text-slate-300"><span class="font-medium text-slate-400">Grupo Sanguíneo:</span> {{ patient.getBloodType() }}</p>
+          @if (patient.getChronicAllergies().length > 0) {
+            <p class="text-rose-400"><span class="font-medium text-slate-400">Alergias:</span> {{ patient.getChronicAllergies().join(', ') }}</p>
+          }
+        </div>
+      </a>
+    }
+  </div>
+</div>

@@ -1,27 +1,166 @@
-<div class="min-h-screen bg-gray-50 p-6">
-  
-  <header class="flex justify-between items-center mb-8">
-    <div class="flex items-center gap-4">
-      <div class="w-14 h-14 bg-brand-primary rounded-brand flex items-center justify-center shadow-md overflow-hidden">
-        <img *ngIf="branding.appLogo()" [src]="branding.appLogo()" class="object-cover w-full h-full" alt="Logo">
-        <span *ngIf="!branding.appLogo()" class="text-white font-bold text-xl">
-          {{ branding.appName().charAt(0) }}
-        </span>
-      </div>
+<div class="space-y-8">
 
-      <div>
-        <h1 class="text-3xl font-bold text-gray-800 tracking-tight">
-          {{ branding.appName() }}
-        </h1>
-        <p class="text-sm text-gray-500 font-medium uppercase tracking-wider">
-          Panel de Gestión Veterinaria
-        </p>
+  <!-- ENCABEZADO DE SECCIÓN (Directo sobre el lienzo, sin caja que encandile) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+        Panel Principal
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Estado de la clínica y actividad de <span class="font-semibold text-slate-700">{{ branding.appName() }}</span>.
+      </p>
+    </div>
+
+    <button class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-xs hover:shadow transition-all cursor-pointer">
+      <span class="text-base">➕</span>
+      <span>Nueva Consulta</span>
+    </button>
+  </div>
+
+  <!-- TARJETAS DE MÉTRICAS (KPIs con íconos destacados) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    
+    <!-- Pacientes -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pacientes</span>
+        <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-base font-medium border border-emerald-100">
+          🐶
+        </div>
+      </div>
+      <div class="mt-4 flex items-baseline justify-between">
+        <span class="text-3xl font-extrabold text-slate-900 tracking-tight">128</span>
+        <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">+12%</span>
       </div>
     </div>
 
-    <button class="bg-brand-primary text-white px-6 py-2 rounded-brand font-bold shadow-sm hover:opacity-90 transition-all">
-      + Nueva Consulta
-    </button>
-  </header>
+    <!-- Turnos -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Turnos Hoy</span>
+        <div class="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-base font-medium border border-sky-100">
+          📅
+        </div>
+      </div>
+      <div class="mt-4 flex items-baseline justify-between">
+        <span class="text-3xl font-extrabold text-slate-900 tracking-tight">8</span>
+        <span class="text-xs font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200/60">3 pendientes</span>
+      </div>
+    </div>
+
+    <!-- Vacunas -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vacunas</span>
+        <div class="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center text-base font-medium border border-violet-100">
+          💉
+        </div>
+      </div>
+      <div class="mt-4 flex items-baseline justify-between">
+        <span class="text-3xl font-extrabold text-slate-900 tracking-tight">15</span>
+        <span class="text-xs font-medium text-slate-400">Esta semana</span>
+      </div>
+    </div>
+
+    <!-- Consultas -->
+    <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Consultas</span>
+        <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-base font-medium border border-amber-100">
+          📋
+        </div>
+      </div>
+      <div class="mt-4 flex items-baseline justify-between">
+        <span class="text-3xl font-extrabold text-slate-900 tracking-tight">342</span>
+        <span class="text-xs font-medium text-slate-400">Histórico</span>
+      </div>
+    </div>
 
   </div>
+
+  <!-- SECCIÓN DE PRÓXIMOS TURNOS -->
+  <div class="bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+    
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-white">
+      <div>
+        <h2 class="text-base font-bold text-slate-900">
+          Próximas Consultas del Día
+        </h2>
+        <p class="text-xs text-slate-400 mt-0.5">Turnos programados para la jornada de hoy</p>
+      </div>
+      
+      <a routerLink="/backoffice/patients" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1 bg-emerald-50/60 px-3 py-1.5 rounded-lg border border-emerald-100">
+        <span>Ver pacientes</span>
+        <span>→</span>
+      </a>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+            <th class="py-3 px-6">Mascota</th>
+            <th class="py-3 px-6">Tutor / Dueño</th>
+            <th class="py-3 px-6">Motivo</th>
+            <th class="py-3 px-6 text-right">Horario</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+          
+          <tr class="hover:bg-slate-50/60 transition-colors">
+            <td class="py-4 px-6 font-semibold text-slate-800">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm shrink-0 border border-slate-200/60">
+                  🐶
+                </div>
+                <div>
+                  <span class="block text-slate-900 font-semibold leading-tight">Thor</span>
+                  <span class="text-xs text-slate-400 font-normal">Canino — Yorkshire</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-slate-600 font-medium">Carlos Gómez</td>
+            <td class="py-4 px-6">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/60">
+                Vacunación Quíntuple
+              </span>
+            </td>
+            <td class="py-4 px-6 text-right">
+              <span class="font-mono font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md text-xs border border-slate-200/60">
+                14:30 hs
+              </span>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-slate-50/60 transition-colors">
+            <td class="py-4 px-6 font-semibold text-slate-800">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm shrink-0 border border-slate-200/60">
+                  🐱
+                </div>
+                <div>
+                  <span class="block text-slate-900 font-semibold leading-tight">Mimi</span>
+                  <span class="text-xs text-slate-400 font-normal">Felino — Mestizo</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-slate-600 font-medium">Laura Benítez</td>
+            <td class="py-4 px-6">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200/60">
+                Control General
+              </span>
+            </td>
+            <td class="py-4 px-6 text-right">
+              <span class="font-mono font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md text-xs border border-slate-200/60">
+                15:15 hs
+              </span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

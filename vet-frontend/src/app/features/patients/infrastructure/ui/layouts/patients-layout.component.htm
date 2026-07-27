@@ -1,0 +1,31 @@
+<!-- infrastructure/ui/layouts/patients-layout.component.html -->
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Cabecera del módulo -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">🏥 Módulo de Pacientes y Clínica</h1>
+    <p class="text-gray-500">Gestión integral de historias clínicas, fichas y métricas.</p>
+  </div>
+
+  <!-- Submenú de navegación interna -->
+  <div class="flex border-b border-gray-200 mb-6 space-x-8">
+    <a routerLink="./" 
+       routerLinkActive="border-indigo-600 text-indigo-600 font-semibold" 
+       [routerLinkActiveOptions]="{exact: true}"
+       class="pb-3 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+      📊 Dashboard General
+    </a>
+    <a routerLink="./list" 
+       routerLinkActive="border-indigo-600 text-indigo-600 font-semibold"
+       class="pb-3 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+      📋 Lista de Pacientes
+    </a>
+    <a routerLink="./medical-history" 
+       routerLinkActive="border-indigo-600 text-indigo-600 font-semibold"
+       class="pb-3 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+      🩺 Historiales Médicos
+    </a>
+  </div>
+
+  <!-- Aquí se renderiza la sub-página activa (Dashboard o Lista) -->
+  <router-outlet></router-outlet>
+</div>

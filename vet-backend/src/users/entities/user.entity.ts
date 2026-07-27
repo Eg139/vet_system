@@ -1,37 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne,BeforeInsert } from 'typeorm';
-// Asegúrate de que la ruta sea correcta según tu carpeta
-import { Organization } from '../../organizations/entities/organization.entity'; 
-import * as bcrypt from 'bcrypt';
+// src/users/entities/user.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Organization } from '../../organizations/entities/organization.entity';
+
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  VET = 'VET',
+  OWNER = 'OWNER',
+}
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
-  @Column('text', { unique: true })
-  email: string;
+  @Column({ unique: true })
+  email!: string;
 
-  @Column('text')
-  password: string;
+  @Column({ select: false }) // 🔐 RECOMENDACIÓN: TypeORM no traerá la clave en SELECTs a menos que se pida explícitamente
+  password!: string;
 
-  @Column('text')
-  fullName: string;
+  @Column()
+  fullName!: string;
 
-  // ESTA ES LA PARTE QUE DA EL ERROR:
-  @ManyToOne(
-    () => Organization, 
-    (organization) => organization.users, 
-    { nullable: false }
-  )
-    organization: Organization; // <- Asegúrate de que termine en punto y coma
-  // --- EL HOOK ---
-  @BeforeInsert()
-  async hashPassword() {
-    // Definimos la complejidad del hash (10 es el estándar balanceado)
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    console.log('Contraseña hasheada automáticamente antes de insertar 🛡️');
-  }
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.VET })
+  role!: UserRole;
 
-  
+  @ManyToOne(() => Organization, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'organizationId' })
+  organization!: Organization;
 }

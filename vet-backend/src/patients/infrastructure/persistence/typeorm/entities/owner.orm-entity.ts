@@ -3,7 +3,8 @@ import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneT
 import { PetOrmEntity } from './pet.orm-entity';
 
 @Entity('owners')
-@Index(['id', 'orgId'], { unique: true }) // Misma lógica multi-tenant que las mascotas
+@Index(['id', 'orgId'], { unique: true }) // Garantiza consulta rápida por id + tenant
+@Index(['email', 'orgId'], { unique: true }) // 👈 🛡️ Garantiza que un email no se repita en la misma organización
 export class OwnerOrmEntity {
   @PrimaryColumn('uuid')
   id!: string;

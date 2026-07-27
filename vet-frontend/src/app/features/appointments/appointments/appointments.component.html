@@ -1,0 +1,191 @@
+<div class="space-y-6">
+
+  <!-- ENCABEZADO DE SECCIÓN -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+        <span>📅</span> Agenda & Turnos
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Gestión centralizada de la agenda diaria, turnos y estados operativos de la clínica.
+      </p>
+    </div>
+
+    <!-- CONTROLES SUPERIORES (Filtros y Acción) -->
+    <div class="flex items-center gap-3">
+      
+      <!-- Selector de Vista (Simulado / Mock) -->
+      <div class="bg-white border border-slate-200 rounded-lg p-1 flex items-center shadow-2xs">
+        <button class="px-3 py-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 rounded-md shadow-2xs">
+          Día
+        </button>
+        <button class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-colors">
+          Semana
+        </button>
+        <button class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-md transition-colors">
+          Mes
+        </button>
+      </div>
+
+      <!-- Botón Nuevo Turno -->
+      <button class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-xs hover:shadow transition-all cursor-pointer">
+        <span class="text-base">➕</span>
+        <span>Nuevo Turno</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- BARRA DE FILTROS RÁPIDOS POR PROFESIONAL -->
+  <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs flex flex-wrap items-center justify-between gap-4">
+    
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Filtrar profesional:</span>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-2xs">
+        Todos
+      </button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+        Dr. Eric (Veterinario)
+      </button>
+      <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+        Dra. Sofía (Cirugía)
+      </button>
+    </div>
+
+    <div class="text-xs text-slate-500 font-medium">
+      Mostrando turnos para: <span class="font-bold text-slate-800">Hoy, Sábado 25 Jul 2026</span>
+    </div>
+
+  </div>
+
+  <!-- GRILLA / CALENDARIO DE TURNOS (CASCARÓN VISUAL) -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- COLUMNA IZQUIERDA: LÍNEA DE TIEMPO DE TURNOS -->
+    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 shadow-2xs overflow-hidden">
+      
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <h2 class="text-base font-bold text-slate-900">Horarios del Día</h2>
+        <span class="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+          8 Turnos Programados
+        </span>
+      </div>
+
+      <div class="divide-y divide-slate-100">
+        
+        <!-- Bloque de Horario 1 -->
+        <div class="p-4 flex items-center justify-between hover:bg-slate-50/60 transition-colors">
+          <div class="flex items-center gap-4">
+            <span class="font-mono font-bold text-sm text-slate-800 w-16 bg-slate-100 px-2 py-1 rounded-md text-center border border-slate-200/60">
+              10:00
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900">Milo</span>
+                <span class="text-xs text-slate-400 font-normal">(Yorkshire Terrier)</span>
+              </div>
+              <p class="text-xs text-slate-500">Tutor: Carlos Pérez — Motivo: Control clínico general</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+              Finalizado
+            </span>
+            <button class="text-xs text-slate-400 hover:text-slate-600 font-medium px-2 py-1 rounded border border-transparent hover:border-slate-200 transition-all">
+              Ver ficha →
+            </button>
+          </div>
+        </div>
+
+        <!-- Bloque de Horario 2 (Turno Activo / En Espera para la Demo) -->
+        <div class="p-4 flex items-center justify-between bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors border-l-4 border-l-emerald-500">
+          <div class="flex items-center gap-4">
+            <span class="font-mono font-bold text-sm text-emerald-800 w-16 bg-emerald-100 px-2 py-1 rounded-md text-center border border-emerald-200">
+              14:30
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900">Thor</span>
+                <span class="text-xs text-slate-400 font-normal">(Yorkshire Terrier)</span>
+              </div>
+              <p class="text-xs text-slate-500">Tutor: Carlos Gómez — Motivo: Vacunación Quíntuple</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/60">
+              En Espera
+            </span>
+            <button class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer">
+              Atender 🚀
+            </button>
+          </div>
+        </div>
+
+        <!-- Bloque de Horario 3 -->
+        <div class="p-4 flex items-center justify-between hover:bg-slate-50/60 transition-colors">
+          <div class="flex items-center gap-4">
+            <span class="font-mono font-bold text-sm text-slate-800 w-16 bg-slate-100 px-2 py-1 rounded-md text-center border border-slate-200/60">
+              15:15
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900">Mimi</span>
+                <span class="text-xs text-slate-400 font-normal">(Felino Mestizo)</span>
+              </div>
+              <p class="text-xs text-slate-500">Tutor: Laura Benítez — Motivo: Control General</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-800 border border-sky-200/60">
+              Confirmado
+            </span>
+            <button class="text-xs text-slate-400 hover:text-slate-600 font-medium px-2 py-1 rounded border border-transparent hover:border-slate-200 transition-all">
+              Ver ficha →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- COLUMNA DERECHA: RESUMEN RÁPIDO Y ACCESOS DE LA JORNADA -->
+    <div class="space-y-6">
+      
+      <!-- Panel de Control del Día -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200/80 shadow-2xs">
+        <h3 class="text-sm font-bold text-slate-900 mb-3">Resumen Operativo</h3>
+        <div class="space-y-3 text-xs">
+          <div class="flex justify-between items-center py-2 border-b border-slate-100">
+            <span class="text-slate-500">Atendidos</span>
+            <span class="font-bold text-slate-800">5 / 8</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-slate-100">
+            <span class="text-slate-500">En sala de espera</span>
+            <span class="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">1 paciente</span>
+          </div>
+          <div class="flex justify-between items-center py-2">
+            <span class="text-slate-500">Cancelados</span>
+            <span class="font-bold text-slate-400">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta / Aviso de Recordatorios (Mock SaaS) -->
+      <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl">
+        <div class="flex items-start gap-3">
+          <span class="text-lg">🤖</span>
+          <div>
+            <h4 class="text-xs font-bold text-indigo-900">Automatización Activa</h4>
+            <p class="text-xs text-indigo-700 mt-1">
+              Los recordatorios por WhatsApp se enviarán de forma automática 2 horas antes de cada turno programado.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
