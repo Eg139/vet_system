@@ -1,14 +1,14 @@
 import { Component, Input, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConsultationRepository } from '../../../../domain/ports/consultation.repository';
-import { ConsultationMemoryAdapter } from '../../../adapters/consultation-memory.adapter'; // 👈 1. Importa tu adaptador
+import { RegisterTreatmentUseCase } from '../../../../application/use-cases/register-treatment.use-case';
+import { RegisterVaccineUseCase } from '../../../../application/use-cases/register-vaccine.use-case';
 import { Patient } from '../../../../domain/models/patient.model';
 import { Consultation } from '../../../../domain/models/consultation.model';
 import { PatientConsultationModalComponent } from '../patient-consultation-modal/patient-consultation-modal.component';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
-
 
 @Component({
   selector: 'app-patient-consultations',
@@ -22,7 +22,9 @@ import Swal from 'sweetalert2';
 export class PatientConsultationsComponent {
   @Input() patient!: Patient;
 
-  private readonly consultationRepository: ConsultationRepository = inject(ConsultationRepository);
+  private readonly consultationRepository = inject(ConsultationRepository);
+  private readonly registerTreatmentUseCase = inject(RegisterTreatmentUseCase);
+  private readonly registerVaccineUseCase = inject(RegisterVaccineUseCase);
 
   // Creamos una computed signal para extraer el ID de forma reactiva
   private readonly patientId = computed(() => this.patient?.getId());
@@ -44,6 +46,7 @@ export class PatientConsultationsComponent {
   closeModal(): void {
     this.isModalOpen = false;
   }
+
 onConsultationSubmit(val: any): void {
     if (this.patient && val.weight) {
       this.patient.registrarPesaje(Number(val.weight));
@@ -51,7 +54,7 @@ onConsultationSubmit(val: any): void {
 
     const newConsultation = new Consultation(
       Date.now().toString(),
-      this.patient.getId(), // 👈 1. Asegúrate de pasar el ID del paciente aquí (o como prop del objeto)
+      this.patient.getId(), 
       'Dr. Eric (Sesión Actual)',
       new Date(),
       val.subjective,
@@ -62,12 +65,30 @@ onConsultationSubmit(val: any): void {
 
     this.consultationRepository.addConsultation(newConsultation).subscribe({
       next: () => {
+        // 🟢 1. Evaluamos el tratamiento de forma independiente
+        if (val.includeTreatment && val.treatmentDescription) {
+          this.registerTreatmentUseCase.execute({
+            patientId: this.patient.getId(),
+            consultationId: newConsultation.getId(),
+            description: val.treatmentDescription
+          }).subscribe();
+        }
+
+        // 🟢 2. Evaluamos la vacuna de forma independiente (¡Antes estaban atadas con && o faltaba ejecutarla!)
+        if (val.includeVaccine && val.vaccineName) {
+          this.registerVaccineUseCase.execute({
+            patientId: this.patient.getId(),
+            consultationId: newConsultation.getId(),
+            vaccineName: val.vaccineName
+          }).subscribe();
+        }
+
         this.closeModal();
         
-        // 🟢 Opcional pero recomendado: ¡Añade tu toque de SweetAlert2 aquí!
+        // Alerta de éxito con SweetAlert2
         Swal.fire({
           title: '¡Evolución guardada!',
-          text: 'La consulta SOAP fue registrada con éxito.',
+          text: 'La consulta SOAP y sus registros adicionales fueron procesados con éxito.',
           icon: 'success',
           iconColor: '#34d399',
           timer: 1500,
@@ -77,8 +98,9 @@ onConsultationSubmit(val: any): void {
           customClass: { popup: 'border border-slate-800 rounded-2xl shadow-2xl' }
         });
       },
-      error: (err) => {
-        console.error('Error al guardar la consulta', err);
+      error: (err: unknown) => {
+        const errorMessage = err instanceof Error ? err.message : 'Error desconocido al procesar la solicitud.';
+        console.error('Error al guardar la consulta:', errorMessage);
       }
     });
   }

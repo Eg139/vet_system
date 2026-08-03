@@ -10,6 +10,7 @@ import { LicensingModule } from './licensing/licensing.module';
 import { BackupModule } from './backup/backup.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PatientsModule } from './patients/infrastructure/patients.module';
+import { MedicalHistoryModule } from './medical-history/infrastructure/medical-history.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { PatientsModule } from './patients/infrastructure/patients.module';
     BackupModule,
     PatientsModule,
     ScheduleModule.forRoot(),
+    MedicalHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

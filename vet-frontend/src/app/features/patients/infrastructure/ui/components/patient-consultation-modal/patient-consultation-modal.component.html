@@ -20,8 +20,7 @@
       </div>
 
       <!-- 2. Formulario con flex-1 y overflow-y-auto (Solo esta parte se desplaza) -->
-      <form [formGroup]="consultationForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-6 space-y-6 text-xs custom-scrollbar">
-        
+<form id="consultationForm" [formGroup]="consultationForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-6 space-y-6 text-xs custom-scrollbar">        
         <!-- SECCIÓN 1: MÉTRICAS Y CONSTANTES -->
         <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800 shadow-inner space-y-3">
           <div class="flex items-center justify-between">
@@ -140,15 +139,17 @@
 
       </form>
 
-      <!-- 3. ACCIONES DE CIERRE (Fijas abajo, siempre visibles) -->
-      <div class="flex justify-end gap-3 px-6 py-4 bg-slate-900 border-t border-slate-800 shrink-0">
-        <button type="button" (click)="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-semibold transition cursor-pointer border border-slate-700/60">
-          Cancelar
-        </button>
-        <button type="button" (click)="onSubmit()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-emerald-950/50 transition cursor-pointer flex items-center gap-2 border border-emerald-500/40">
-          <span>Guardar Evolución y Actualizar Perfil</span>
-        </button>
-      </div>
+      <!-- 4. ACCIONES DE CIERRE (Fijas abajo, siempre visibles) -->
+<div class="flex justify-end gap-3 px-6 py-4 bg-slate-900 border-t border-slate-800 shrink-0">
+  <button type="button" (click)="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-semibold transition cursor-pointer border border-slate-700/60">
+    Cancelar
+  </button>
+  
+  <!-- 🟢 Vinculamos el botón al ID del formulario mediante el atributo form -->
+  <button type="submit" form="consultationForm" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-emerald-950/50 transition cursor-pointer flex items-center gap-2 border border-emerald-500/40">
+    <span>Guardar Evolución y Actualizar Perfil</span>
+  </button>
+</div>
 
     </div>
   </div>
