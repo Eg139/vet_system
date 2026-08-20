@@ -13,8 +13,7 @@ export class Organization {
   taxId?: string;
 
   @Column({ nullable: true })
-    logoUrl: string;
-
+  logoUrl: string;
 
   @CreateDateColumn({ select: false }) // Ocultamos metadatos de las consultas por defecto
   createdAt: Date;
@@ -22,7 +21,7 @@ export class Organization {
   @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
-  // --- NUEVOS CAMPOS DE LICENCIA ---
+  // --- CAMPOS DE LICENCIA ---
   @Column({ default: true })
   isLicenseActive: boolean;
 
@@ -37,13 +36,18 @@ export class Organization {
 
   @Column({ type: 'text', nullable: true }) // Usamos text porque la firma AES es larga
   licenseSignature: string;
+
   @Column({ default: '#3b82f6' }) // Color principal por defecto (Azul)
   primaryColor: string;
 
   @Column({ default: '0.5rem' }) // Bordes por defecto
   borderRadius: string;
+
+  // --- NUEVO: CONFIGURACIÓN REGULATORIA ---
+  @Column({ type: 'varchar', length: 10, default: 'AR' })
+  countryCode: string;
     
-  // Añade esta relación:
+  // Relación con usuarios
   @OneToMany(() => User, (user) => user.organization)
   users: User[];
 }

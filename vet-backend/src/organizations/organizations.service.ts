@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException, Logger } from '@nestjs/common';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,36 +15,53 @@ export class OrganizationsService {
   ) {}
 
   async create(createOrganizationDto: CreateOrganizationDto) {
-      try {
-        // 1. Creamos la instancia de la entidad
-        const organization = this.organizationRepository.create(createOrganizationDto);
-        // 2. La guardamos en Postgres
-        return await this.organizationRepository.save(organization);
-      } catch (error) {
-        this.handleDBExceptions(error);
-      }
+    try {
+      // 1. Creamos la instancia de la entidad
+      const organization = this.organizationRepository.create(createOrganizationDto);
+      // 2. La guardamos en Postgres
+      return await this.organizationRepository.save(organization);
+    } catch (error) {
+      this.handleDBExceptions(error);
     }
+  }
+
+  async findAll() {
+    return await this.organizationRepository.find();
+  }
+
+  async findOne(id: string) { // 👈 Cambiado a string (UUID)
+    const organization = await this.organizationRepository.findOneBy({ id });
+    if (!organization) {
+      throw new NotFoundException(`Organización con ID ${id} no encontrada`);
+    }
+    return organization;
+  }
+
+  async update(id: string, updateOrganizationDto: UpdateOrganizationDto) { // 👈 Cambiado a string
+    // Buscamos primero para asegurar que existe
+    const organization = await this.findOne(id);
+    
+    // Actualizamos combinando datos
+    const updated = Object.assign(organization, updateOrganizationDto);
+    
+    try {
+      return await this.organizationRepository.save(updated);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async remove(id: string) { // 👈 Cambiado a string
+    const organization = await this.findOne(id);
+    await this.organizationRepository.remove(organization);
+    return { message: `Organización con ID ${id} eliminada exitosamente` };
+  }
+
   private handleDBExceptions(error: any) {
     if (error.code === '23505') // Código de Postgres para "Unique violation"
       throw new BadRequestException(error.detail);
 
     this.logger.error(error);
     throw new InternalServerErrorException('Unexpected error, check server logs');
-  }
-
-  findAll() {
-    return `This action returns all organizations`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} organization`;
-  }
-
-  update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
-    return `This action updates a #${id} organization`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} organization`;
   }
 }

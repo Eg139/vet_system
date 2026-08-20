@@ -6,7 +6,7 @@ export class CreateOrganizationDto {
   @IsString()
   @IsNotEmpty({ message: 'El nombre de la organización es obligatorio' })
   @MinLength(3)
-  name: string;
+  name!: string;
 
 @ApiProperty({ 
     example: '20123456789', 
@@ -31,4 +31,9 @@ export class CreateOrganizationDto {
   @IsOptional()
   @IsString()
   planType?: string;
+
+  @ApiProperty({ example: 'AR', default: 'AR', required: false })
+  @IsOptional()
+  @IsString()
+  countryCode?: string;
 }

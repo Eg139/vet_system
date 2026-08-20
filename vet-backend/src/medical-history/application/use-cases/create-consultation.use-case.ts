@@ -12,7 +12,7 @@ import {
 } from '../../domain/ports/medical-history.repository.interface';
 import { ConsultationEntity } from '../../domain/entities/consultation.entity';
 import { CreateConsultationHttpDto } from '../../infrastructure/dtos/create-consultation.dto';
-import { ConsultationOrmEntity } from '../../infrastructure/persistence/typeorm/entities/consultation.orm-entity';
+import { ConsultationOrmEntity } from '../../infrastructure/persistence/typeorm/entities/consultation.typeorm-entity';
 
 export interface CreateConsultationInput {
   patientId: string;

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
 import { IMedicalHistoryRepository } from '../../../../domain/ports/medical-history.repository.interface';
 import { ConsultationEntity } from '../../../../domain/entities/consultation.entity';
-import { ConsultationOrmEntity } from '../entities/consultation.orm-entity';
+import { ConsultationOrmEntity } from '../entities/consultation.typeorm-entity';
 
 @Injectable()
 export class MedicalHistoryRepository implements IMedicalHistoryRepository {

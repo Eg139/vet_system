@@ -1,16 +1,38 @@
 export class VaccineEntity {
+  private readonly id: string;
+  private readonly patientId: string;
+  private readonly orgId: string;
+  private vaccineName: string;
+  private batchNumber: string;
+  private administeredBy: string;
+  private applicationDate: Date;
+  private nextDueDate?: Date;
+  private notes?: string;
+  private readonly createdAt: Date;
+
   constructor(
-    private readonly id: string,
-    private readonly patientId: string,
-    private readonly orgId: string,
-    private vaccineName: string,
-    private batchNumber: string,
-    private administeredBy: string,
-    private applicationDate: Date,
-    private nextDueDate?: Date,
-    private notes?: string,
-    private readonly createdAt: Date = new Date(),
+    id: string,
+    patientId: string,
+    orgId: string,
+    vaccineName: string,
+    batchNumber: string,
+    administeredBy: string,
+    applicationDate: Date,
+    nextDueDate?: Date | null, // Permite null por si viene de la DB
+    notes?: string | null,     // Permite null por si viene de la DB
+    createdAt: Date = new Date(),
   ) {
+    this.id = id;
+    this.patientId = patientId;
+    this.orgId = orgId;
+    this.vaccineName = vaccineName;
+    this.batchNumber = batchNumber;
+    this.administeredBy = administeredBy;
+    this.applicationDate = applicationDate;
+    this.nextDueDate = nextDueDate ?? undefined; // Normaliza null a undefined
+    this.notes = notes ?? undefined;             // Normaliza null a undefined
+    this.createdAt = createdAt;
+
     this.validateRequiredFields();
   }
 
